@@ -1,0 +1,67 @@
+/*Given two strings s and t, write a function to determine if t is an anagram of s.
+
+For example,
+s = "anagram", t = "nagaram", return true.
+s = "rat", t = "car", return false.
+*/
+//其实就是判断两个字符串是否包含一样的字符
+//方法1，直接统计字符的个数
+bool isAnagram(string s, string t) {
+        if(s.size()!=t.size())return false;
+        
+        int *res1 = new int[26]();
+        int *res2 = new int[26]();
+        for(auto&e:s)
+        {
+            res1[e-'a']++;
+        }
+        
+        for(auto&e:t)
+        {
+            res2[e-'a']++;
+        }
+        
+        for(int i=0;i<26;++i)
+        {
+            if(res2[i]!=res1[i])return false;
+        }
+        return true;
+    }
+	
+//方法2，先对字符排序,使用的是快排，效率差
+class Solution {
+public:
+    
+    int partition(string&input,int lower,int upper)
+    {
+        int partion_key = input[lower];
+        while(lower<upper)
+        {
+            while(lower<upper&&input[upper]>=partion_key)
+                upper--;
+            input[lower]=input[upper];
+            while(lower<upper&&input[lower]<=partion_key)
+                lower++;
+            input[upper]=input[lower];
+        }
+        input[lower]=partion_key;
+        
+        return lower;
+    }
+    
+    void QuickSort(string&input,int start,int end)
+    {
+        int partion ;
+        if(start<end)
+        {
+            partion = partition(input,start,end);
+            QuickSort(input,start,partion-1);
+            QuickSort(input,partion+1,end);
+        }
+    }
+    bool isAnagram(string s, string t) {
+       QuickSort(s,0,s.size()-1);
+       QuickSort(t,0,t.size()-1);
+       return s==t;
+    }
+};
